@@ -1,4 +1,6 @@
 # --- IMPORTACIONES ---
+from datetime import datetime
+
 # CustomTkinter para interfaz moderna tipo Material Design
 import customtkinter as ctk
 
@@ -11,10 +13,7 @@ import threading
 import os
 
 # Importa la función de procesamiento de datos
-from procesamiento import procesar_excel
-
-# Importa la ventana para pedir nombre de carpeta
-from app_catalogo.helpers import ventana_nombre_carpeta
+from diagnostico import procesar_excel
 
 RUTA_ASSETS = os.path.join(os.path.dirname(__file__), 'assets')
 
@@ -52,30 +51,28 @@ def seleccionar_archivos():
         messagebox.showwarning("Advertencia", "No seleccionaste archivo Excel.")
         return
 
-    # Selección de carpeta base para crear subcarpeta
-    base_folder = filedialog.askdirectory(title="Selecciona carpeta donde crear subcarpeta")
+    # Selección de carpeta base
+    base_folder = filedialog.askdirectory(title="Selecciona carpeta base de resultados")
     if not base_folder:
         messagebox.showwarning("Advertencia", "No seleccionaste carpeta base.")
         return
 
-    # Ventana emergente para pedir nombre de subcarpeta
-    nombre_carpeta = ventana_nombre_carpeta(ventana)
-    if not nombre_carpeta:
-        messagebox.showwarning("Advertencia", "No ingresaste un nombre para la carpeta.")
-        return
+    # Generar nombre automático para la carpeta
+    nombre_archivo = os.path.splitext(os.path.basename(excel_path))[0]
+    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M")
+    nombre_carpeta = f"{timestamp} Diagnostico {nombre_archivo}"
 
-    # Ruta final con subcarpeta y subcarpeta de gráficos
+    # Ruta final de guardado
     ruta_guardado = os.path.join(base_folder, nombre_carpeta)
     os.makedirs(os.path.join(ruta_guardado, "graficos"), exist_ok=True)
 
-    # Lanza el procesamiento en hilo aparte para no congelar la interfaz
+    # Lanzar análisis en hilo
     hilo = threading.Thread(
         target=procesar_excel,
         args=(excel_path, ruta_guardado, barra_progreso, ventana),
         daemon=True
     )
     hilo.start()
-
 
 # --- LANZAR LA APP CON TODOS LOS ELEMENTOS ---
 def iniciar_app():
