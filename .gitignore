@@ -1,6 +1,33 @@
+# Artefactos de Python
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Credenciales / variables de entorno
 .env
+.env.*
+
+# Entornos virtuales
+.venv/
+venv/
+
+# Configuración local de IDE
 .vscode/
-*.xlsx
+
+# Datos de negocio (pesados o sensibles)
+data/raw/*
+data/processed/*
+!data/raw/README.md          # deja un archivo descriptivo si quieres
+!data/processed/.gitkeep
+
+# Checkpoints de Jupyter
+.ipynb_checkpoints/
+
+# Archivos binarios grandes
 *.ico
+*.png
+*.pdf
+*.docx
+*.xlsx
+*.csv
+*.parquet
+*.sql.gz

@@ -125,7 +125,6 @@ def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
         with open(os.path.join(ruta_guardado, "reporte_diagnostico.txt"), "a", encoding="utf-8") as f:
             f.write(f"Archivo Excel exportado: {ruta_excel}\n\n")
 
-
         # Al final del try, antes del mensaje de éxito
         duracion_total = time.time() - inicio_total
         agregar_etapa_general(len(df), len(df.columns), duracion_total)
