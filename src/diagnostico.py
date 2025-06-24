@@ -13,6 +13,9 @@ from src.actualizar_bdm import actualizar_bdm
 from pyspark.sql import SparkSession
 from src.cargar_datos_spark import cargar_y_limpiar_datos_spark
 from src.normalizacion_semantica import aplicar_normalizacion_semantica
+from src.sugerencia_codigo_unspsc import sugerir_codigos_para_faltantes
+from src.sospechosos_codigo_unspsc import detectar_sospechosos_unspsc
+
 
 spark = SparkSession.builder \
     .appName("DiagnosticoCatalogo") \
@@ -150,6 +153,9 @@ def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
             ruta_mapeos="data/processed/mapeos_v14_v26.csv",
             ruta_caracteristicas="data/processed/caracteristicas.csv"
         )
+        
+        df = sugerir_codigos_para_faltantes(df)
+        df = detectar_sospechosos_unspsc(df)
         
         messagebox.showinfo("Finalizado", "El diagnóstico ha finalizado correctamente.")
 
