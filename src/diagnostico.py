@@ -1,7 +1,6 @@
 import os
 import time
 import pandas as pd
-from carga_datos import cargar_y_limpiar_datos
 from tkinter import messagebox
 from graficos import *
 from reporte import (
@@ -11,7 +10,12 @@ from reporte import (
     agregar_etapa_graficos
 )
 from src.actualizar_bdm import actualizar_bdm
+from pyspark.sql import SparkSession
+from src.cargar_datos_spark import cargar_y_limpiar_datos_spark
 
+spark = SparkSession.builder \
+    .appName("DiagnosticoCatalogo") \
+    .getOrCreate()
 
 def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
     inicio_total = time.time()
@@ -22,7 +26,11 @@ def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
 
         # Limpieza y carga de datos
         inicio_limpieza = time.time()
-        df, info_limpieza = cargar_y_limpiar_datos(excel_path, ruta_guardado, barra_progreso, ventana)
+        
+        df_spark = cargar_y_limpiar_datos_spark(spark, excel_path)
+        df = df_spark.toPandas()
+        info_limpieza = {"metodo": "spark"}  # puedes ajustar si necesitas más info
+        
         duracion_limpieza = time.time() - inicio_limpieza
 
         # Crear columnas temporales con términos ordenados alfabéticamente
