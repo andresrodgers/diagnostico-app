@@ -10,6 +10,8 @@ from reporte import (
     agregar_etapa_limpieza,
     agregar_etapa_graficos
 )
+from src.actualizar_bdm import actualizar_bdm
+
 
 def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
     inicio_total = time.time()
@@ -131,6 +133,13 @@ def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
 
         barra_progreso.set(1)
         ventana.after(0, lambda: ventana.after(300, lambda: barra_progreso.set(0)))
+        
+        actualizar_bdm(
+            ruta_codigos="data/processed/codigos_unspsc.csv",
+            ruta_mapeos="data/processed/mapeos_v14_v26.csv",
+            ruta_caracteristicas="data/processed/caracteristicas.csv"
+        )
+        
         messagebox.showinfo("Finalizado", "El diagnóstico ha finalizado correctamente.")
 
     except Exception as e:
