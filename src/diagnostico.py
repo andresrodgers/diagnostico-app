@@ -12,6 +12,7 @@ from reporte import (
 from src.actualizar_bdm import actualizar_bdm
 from pyspark.sql import SparkSession
 from src.cargar_datos_spark import cargar_y_limpiar_datos_spark
+from src.normalizacion_semantica import aplicar_normalizacion_semantica
 
 spark = SparkSession.builder \
     .appName("DiagnosticoCatalogo") \
@@ -141,6 +142,8 @@ def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
 
         barra_progreso.set(1)
         ventana.after(0, lambda: ventana.after(300, lambda: barra_progreso.set(0)))
+        
+        df = aplicar_normalizacion_semantica(df)
         
         actualizar_bdm(
             ruta_codigos="data/processed/codigos_unspsc.csv",
