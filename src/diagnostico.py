@@ -16,6 +16,8 @@ from src.normalizacion_semantica import aplicar_normalizacion_semantica
 from src.sugerencia_codigo_unspsc import sugerir_codigos_para_faltantes
 from src.sospechosos_codigo_unspsc import detectar_sospechosos_unspsc
 from src.agrupamiento_similar import agrupar_registros_similares
+from src.evaluacion_calidad import evaluar_calidad_por_registro
+from utils.registro_historial import registrar_diagnostico_bdm
 
 
 spark = SparkSession.builder \
@@ -162,7 +164,24 @@ def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
         output_path = "data/report/agrupamiento_similar.xlsx"
         df_similares.to_excel(output_path, index=False)
         
+        df = evaluar_calidad_por_registro(df)
+        df.to_csv("catalogo_final.csv", index=False)
+        
+        tiempo_total_segundos = duracion_total
+        registrar_diagnostico_bdm(
+            catalogo_nombre=nombre_archivo,
+            total_rows=len(df),
+            total_dups=df["duplicado_corta"].sum() + df["duplicado_larga"].sum(),
+            nuevos=df["codigo"].isna().sum(),
+            actualizados=0,  # actualízalo si lo detectas
+            total_seg=tiempo_total_segundos,
+            estado="OK",
+            notas="Ejecución finalizada correctamente"
+        )
+        
         messagebox.showinfo("Finalizado", "El diagnóstico ha finalizado correctamente.")
+        
+        
 
     except Exception as e:
         ventana.after(0, barra_progreso.set, 0)
