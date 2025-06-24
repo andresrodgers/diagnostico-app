@@ -15,6 +15,7 @@ from src.cargar_datos_spark import cargar_y_limpiar_datos_spark
 from src.normalizacion_semantica import aplicar_normalizacion_semantica
 from src.sugerencia_codigo_unspsc import sugerir_codigos_para_faltantes
 from src.sospechosos_codigo_unspsc import detectar_sospechosos_unspsc
+from src.agrupamiento_similar import agrupar_registros_similares
 
 
 spark = SparkSession.builder \
@@ -156,6 +157,10 @@ def procesar_excel(excel_path, ruta_guardado, barra_progreso, ventana):
         
         df = sugerir_codigos_para_faltantes(df)
         df = detectar_sospechosos_unspsc(df)
+        
+        df_similares = agrupar_registros_similares(df)
+        output_path = "data/report/agrupamiento_similar.xlsx"
+        df_similares.to_excel(output_path, index=False)
         
         messagebox.showinfo("Finalizado", "El diagnóstico ha finalizado correctamente.")
 
