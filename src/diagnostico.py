@@ -9,10 +9,10 @@ from reporte import (
     agregar_etapa_limpieza,
     agregar_etapa_graficos
 )
-from src.actualizar_bdm import actualizar_bdm
+from actualizar_bdm import actualizar_bdm
 from pyspark.sql import SparkSession
 from src.cargar_datos_spark import cargar_y_limpiar_datos_spark
-from src.normalizacion_semantica import aplicar_normalizacion_semantica
+from normalizacion_semantica import aplicar_normalizacion_semantica
 from src.sugerencia_codigo_unspsc import sugerir_codigos_para_faltantes
 from src.sospechosos_codigo_unspsc import detectar_sospechosos_unspsc
 from src.agrupamiento_similar import agrupar_registros_similares

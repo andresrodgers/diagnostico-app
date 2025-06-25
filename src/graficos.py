@@ -6,8 +6,8 @@ import seaborn as sns
 import textwrap
 import pandas as pd
 import numpy as np
-from app_catalogo.helpers import extraer_caracteristicas
-from app_catalogo.helpers import extraer_producto_unspc, extraer_primera_parte_desc_larga
+from utils.helpers import extraer_caracteristicas
+from utils.helpers import extraer_producto_unspc, extraer_primera_parte_desc_larga
 
 import matplotlib.pyplot as plt
 
